@@ -58,7 +58,7 @@ async def _(ult):
                     single_file,
                     thumb=THUMB,
                     caption=f"**File Name :** {caption_rts}",
-                    #force_document=False,
+                    force_document=False,
                     supports_streaming=True,
                     reply_to=ult.message.id,
                 )
