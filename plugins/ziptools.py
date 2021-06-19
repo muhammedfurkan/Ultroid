@@ -58,7 +58,7 @@ async def _(ult):
                     single_file,
                     thumb=THUMB,
                     caption=f"**File Name :** {caption_rts}",
-                    force_document=True,
+                    force_document=False,
                     reply_to=ult.message.id,
                 )
             except Exception as e:
