@@ -20,7 +20,7 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from . import *
 import shutil
-
+from telethon.tl.types import DocumentAttributeVideo,DocumentAttributeAudio
 
 
 # HACK :)-----------------------------------------------
