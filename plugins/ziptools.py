@@ -16,8 +16,37 @@ import asyncio
 import os
 import time
 import zipfile
-
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 from . import *
+import shutil
+
+
+
+# HACK :)-----------------------------------------------
+
+
+def open_zip(zip_yolu: str):
+    with open(zip_yolu, 'rb') as zip_dosyasi:
+        z = zipfile.ZipFile(zip_dosyasi, allowZip64=True)
+        for eleman in z.infolist():
+            try:
+                return z.extract(eleman)
+            except zipfile.error as hata:
+                return hata
+
+# HACK :)------------------------------------------------
+
+
+def opened_zip(zip_yolu: str):
+    for adres in os.walk(zip_yolu.split('.zip')[0]):
+        # 2. İndex Dosyalara Denk Geliyor!
+        if adres[2]:
+            for dosya in adres[2]:
+                return f"{adres[0]}/{dosya}"
+
+
+
 
 
 @ultroid_cmd(pattern="unzip$")
@@ -42,9 +71,13 @@ async def _(ult):
         ),
     )
     place = "resources/downloads/extracted/"
-    with zipfile.ZipFile(dnl, "r") as zip_ref:
-        zip_ref.extractall(place)
-    filename = sorted(get_lst_of_files(place, []))
+    shutil.unpack_archive(downloaded_file_name, extracted)
+    files = [f for f in glob(dnl+"./**",
+                                 recursive=True) if os.path.isfile(f)]
+    filename = set(list(files))
+    #with zipfile.ZipFile(dnl, "r") as zip_ref:
+        #zip_ref.extractall(place)
+    #filename = sorted(get_lst_of_files(place, []))
     await msg.edit("Unzipping now")
     THUMB = udB.get("THUMB_URL")
     Enum = 0
@@ -52,14 +85,42 @@ async def _(ult):
     for single_file in filename:
         if os.path.exists(single_file):
             caption_rts = os.path.basename(single_file)
+                force_document = False
+                supports_streaming = True
+                document_attributes = []
+                if single_file.endswith((".mp4", ".mp3", ".flac", ".webm")):
+                    metadata = extractMetadata(createParser(single_file))
+                    duration = 0
+                    width = 0
+                    height = 0
+                    if metadata.has("duration"):
+                        duration = metadata.get('duration').seconds
+                    if os.path.exists(thumb_image_path):
+                        metadata = extractMetadata(
+                            createParser(thumb_image_path))
+                        if metadata.has("width"):
+                            width = metadata.get("width")
+                        if metadata.has("height"):
+                            height = metadata.get("height")
+                    document_attributes = [
+                        DocumentAttributeVideo(
+                            duration=duration,
+                            w=width,
+                            h=height,
+                            round_message=False,
+                            supports_streaming=True
+                        )
+                    ]
+            #caption_rts = os.path.basename(single_file)
             try:
                 await ultroid_bot.send_file(
                     ult.chat_id,
                     single_file,
-                    thumb=THUMB,
-                    caption=f"**File Name :** {caption_rts}",
-                    force_document=False,
-                    supports_streaming=True,
+                    caption=f"`{caption_rts}`",
+                    force_document=force_document,
+                    supports_streaming=supports_streaming,
+                    allow_cache=False,
+                    attributes=document_attributes,
                     reply_to=ult.message.id,
                 )
             except Exception as e:
