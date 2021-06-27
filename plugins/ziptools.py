@@ -88,7 +88,7 @@ async def _(ult):
                 force_document = False
                 supports_streaming = True
                 document_attributes = []
-                if single_file.endswith((".mp4", ".mp3", ".flac", ".webm")):
+                if single_file.endswith((".mp4", ".mp3", ".flac", ".webm",".jpeg",".jpg")):
                     metadata = extractMetadata(createParser(single_file))
                     duration = 0
                     width = 0
