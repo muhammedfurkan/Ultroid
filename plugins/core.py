@@ -31,6 +31,7 @@ import os
 from telethon import Button
 
 from . import *
+import plugins
 
 
 @in_pattern(
@@ -40,16 +41,16 @@ from . import *
 async def inline_handler(event):
     builder = event.builder
     input_str = event.pattern_match.group(1)
-    plug = [*PLUGINS]
-    plugs = []
     if input_str is None or input_str == "":
+        plug = [*plugins]
+        plugs = []
         for i in plug:
             try:
                 plugs.append(
                     await event.builder.document(
                         f"./plugins/{i}.py",
                         title=f"{i}.py",
-                        description=f"Module Found",
+                        description='Module Found',
                         text=f"{i}.py use .paste to paste in neko and raw..",
                         buttons=[
                             [
@@ -60,8 +61,9 @@ async def inline_handler(event):
                                 ),
                             ],
                         ],
-                    ),
+                    )
                 )
+
             except BaseException:
                 pass
         await event.answer(plugs)
@@ -87,7 +89,7 @@ async def inline_handler(event):
         except BaseException:
             ultroidcode = builder.article(
                 title=f"Module {input_str}.py Not Found",
-                description=f"No Such Module",
+                description='No Such Module',
                 text=f"No Module Named {input_str}.py",
                 buttons=[
                     [
@@ -99,6 +101,7 @@ async def inline_handler(event):
                     ],
                 ],
             )
+
             await event.answer([ultroidcode])
             return
 

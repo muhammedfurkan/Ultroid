@@ -130,17 +130,20 @@ async def dd(event):
         except Exception as es:
             print(es)
             return
-    if is_source_channel_added(y):
+    if (
+        is_source_channel_added(y)
+        or not is_source_channel_added(y)
+        and is_source_channel_added(y)
+    ):
         rem_source_channel(y)
         await x.edit("Source removed from database")
         await asyncio.sleep(3)
         await x.delete()
-    elif is_source_channel_added(y):
-        rem_source_channel(y)
-        await x.edit("Source removed from database")
-        await asyncio.sleep(3)
-        await x.delete()
-    elif not is_source_channel_added(y):
+    elif (
+        not is_source_channel_added(y)
+        and not is_source_channel_added(y)
+        and not is_source_channel_added(y)
+    ):
         await x.edit("Source channel is already removed from database. ")
         await asyncio.sleep(3)
         await x.delete()

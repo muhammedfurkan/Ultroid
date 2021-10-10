@@ -52,12 +52,8 @@ async def _(event):
                 except BaseException:
                     pass
             arg = event.text.split(" ", maxsplit=2)
-            if len(arg) > 2:
-                FBAN = arg[1]
-                REASON = arg[2]
-            else:
-                FBAN = arg[1]
-                REASON = " #TBMassBanned "
+            FBAN = arg[1]
+            REASON = arg[2] if len(arg) > 2 else " #TBMassBanned "
         else:
             FBAN = previous_message.sender_id
             try:
@@ -138,7 +134,7 @@ async def _(event):
                     ):
                         await msg.edit("Try again after 5 mins.")
                         return
-                if len(fedList) == 0:
+                if not fedList:
                     await msg.edit(
                         f"Unable to collect FedAdminList. Retrying ({a+1}/3)...",
                     )
@@ -158,12 +154,12 @@ async def _(event):
                     In = True
             elif In:
                 tempFedId += x
-        if len(fedList) == 0:
+        if not fedList:
             await msg.edit("Unable to collect FedAdminList.")
             return
     await msg.edit(f"FBaning in {len(fedList)} feds.")
     try:
-        await ultroid_bot.send_message(chat, f"/start")
+        await ultroid_bot.send_message(chat, '/start')
     except BaseException:
         await msg.edit("Specified FBan Group ID is incorrect.")
         return
@@ -185,7 +181,7 @@ async def _(event):
     try:
         os.remove("fedlist")
     except Exception as e:
-        print(f"Error in removing FedAdmin file.\n{str(e)}")
+        print(f'Error in removing FedAdmin file.\n{e}')
     await msg.edit(
         f"SuperFBan Completed.\nTotal Feds - {len(fedlist)}.\nExcluded - {exCount}.\n Affected {len(fedList) - exCount} feds.\n#TB",
     )

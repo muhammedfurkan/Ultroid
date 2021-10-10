@@ -100,24 +100,23 @@ async def upstream(ups):
     if "now" not in conf:
         if changelog:
             changelog_str = (
-                changelog + f"\n\nUse <code>{hndlr}update now</code> to update!"
+                changelog +
+                f"\n\nUse <code>{hndlr}update now</code> to update!"
             )
             tldr_str = tl_chnglog + f"\n\nUse {hndlr}update now to update!"
-            if len(changelog_str) > 4096:
-                await eor(pagal, get_string("upd_4"))
-                file = open(f"ultroid_updates.txt", "w+")
-                file.write(tldr_str)
-                file.close()
-                await ups.client.send_file(
-                    ups.chat_id,
-                    f"ultroid_updates.txt",
-                    caption=get_string("upd_5").format(hndlr),
-                    reply_to=ups.id,
-                )
-                remove(f"ultroid_updates.txt")
-                return
-            else:
+            if len(changelog_str) <= 4096:
                 return await eod(pagal, changelog_str, parse_mode="html")
+            await eor(pagal, get_string("upd_4"))
+            with open('ultroid_updates.txt', "w+") as file:
+                file.write(tldr_str)
+            await ups.client.send_file(
+                ups.chat_id,
+                'ultroid_updates.txt',
+                caption=get_string("upd_5").format(hndlr),
+                reply_to=ups.id,
+            )
+
+            remove('ultroid_updates.txt')
         else:
             await eod(
                 pagal,
@@ -125,7 +124,7 @@ async def upstream(ups):
                 time=10,
             )
             repo.__del__()
-            return
+        return
     if Var.HEROKU_API is not None:
         import heroku3
 

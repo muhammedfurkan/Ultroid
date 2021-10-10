@@ -44,10 +44,12 @@ LOG = Var.LOG_CHANNEL
 @ultroid_bot.on(events.NewMessage(outgoing=True))
 @ultroid_bot.on(events.MessageEdited(outgoing=True))
 async def set_not_afk(event):
-    if event.is_private:
-        if Redis("PMSETTING") == "True":
-            if not is_approved(event.chat_id):
-                return
+    if (
+        event.is_private
+        and Redis("PMSETTING") == "True"
+        and not is_approved(event.chat_id)
+    ):
+        return
     global USER_AFK
     global afk_time
     global last_afk_message
@@ -109,7 +111,8 @@ async def set_not_afk(event):
 
 
 @ultroid_bot.on(
-    events.NewMessage(incoming=True, func=lambda e: bool(e.mentioned or e.is_private)),
+    events.NewMessage(incoming=True, func=lambda e: bool(
+        e.mentioned or e.is_private)),
 )
 async def on_afk(event):
     if event.is_private:
@@ -132,7 +135,8 @@ async def on_afk(event):
     if USER_AFK and not (sender.bot or sender.verified):
         msg = None
         if reason:
-            message_to_reply = get_string("afk_3").format(total_afk_time, reason)
+            message_to_reply = get_string(
+                "afk_3").format(total_afk_time, reason)
         else:
             message_to_reply = get_string("afk_4").format(total_afk_time)
         try:

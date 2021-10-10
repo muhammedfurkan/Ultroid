@@ -37,38 +37,37 @@ async def download(event):
         ok = await event.get_reply_message()
         if not ok.media:
             return await eod(xx, get_string("udl_1"), time=5)
+        if not kk:
+            d = "resources/downloads/"
+            o = await event.client.download_media(
+                ok,
+                d,
+                progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                    progress(
+                        d,
+                        t,
+                        xx,
+                        k,
+                        "Downloading...",
+                    ),
+                ),
+            )
         else:
-            if not kk:
-                d = "resources/downloads/"
-                o = await event.client.download_media(
-                    ok,
-                    d,
-                    progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                        progress(
-                            d,
-                            t,
-                            xx,
-                            k,
-                            "Downloading...",
-                        ),
+            d = f"resources/downloads/{kk}"
+            o = await event.client.download_media(
+                ok,
+                d,
+                progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                    progress(
+                        d,
+                        t,
+                        xx,
+                        k,
+                        "Downloading...",
+                        file_name=d,
                     ),
-                )
-            else:
-                d = f"resources/downloads/{kk}"
-                o = await event.client.download_media(
-                    ok,
-                    d,
-                    progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                        progress(
-                            d,
-                            t,
-                            xx,
-                            k,
-                            "Downloading...",
-                            file_name=d,
-                        ),
-                    ),
-                )
+                ),
+            )
     e = datetime.now()
     t = time_formatter(((e - s).seconds) * 1000)
     if t:

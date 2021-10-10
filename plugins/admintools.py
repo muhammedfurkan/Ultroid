@@ -53,6 +53,7 @@
 """
 
 import asyncio
+from telnetlib import EOR
 
 from telethon.errors import BadRequestError
 from telethon.errors.rpcerrorlist import UserIdInvalidError
@@ -273,7 +274,7 @@ async def pin(msg):
         except BadRequestError:
             return await eor(msg, "`Hmm, I'm have no rights here...`")
         except Exception as e:
-            return await eor(msg, f"**ERROR:**`{str(e)}`")
+            return await EOR(msg, f"**ERROR:**`{str(e)}`")
         try:
             await msg.delete()
         except BaseException:
@@ -367,7 +368,8 @@ async def fastpurgerme(purg):
         await ultroid_bot.delete_messages(chat, msgs)
     done = await ultroid_bot.send_message(
         purg.chat_id,
-        "__Fast purge complete!__\n**Purged** `" + str(count) + "` **messages.**",
+        "__Fast purge complete!__\n**Purged** `" +
+        str(count) + "` **messages.**",
     )
     await asyncio.sleep(5)
     await done.delete()

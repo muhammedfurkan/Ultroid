@@ -32,17 +32,14 @@ async def autopic(e):
     clls = returnpage(search)
     if len(clls) == 0:
         return await eor(e, get_string("autopic_2").format(search))
-    if not len(clls) == 1:
-        num = random.randrange(0, len(clls) - 1)
-    else:
-        num = 0
+    num = random.randrange(0, len(clls) - 1) if len(clls) != 1 else 0
     page = clls[num]
     title = page["title"]
     await eor(e, get_string("autopic_3").format(title))
     udB.set("AUTOPIC", "True")
     while True:
         ge = udB.get("AUTOPIC")
-        if not ge == "True":
+        if ge != "True":
             return
         animepp(page["href"])
         file = await ultroid_bot.upload_file("autopic.jpg")

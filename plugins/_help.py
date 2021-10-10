@@ -19,7 +19,6 @@ from . import *
 )
 async def ult(ult):
     plug = ult.pattern_match.group(1)
-    tgbot = Var.BOT_USERNAME
     if plug:
         try:
             if plug in HELP:
@@ -44,6 +43,7 @@ async def ult(ult):
         except BaseException:
             await eor(ult, "Error 🤔 occured.")
     else:
+        tgbot = Var.BOT_USERNAME
         try:
             results = await ultroid_bot.inline_query(tgbot, "ultd")
         except rep:
